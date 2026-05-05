@@ -17,25 +17,37 @@ logger = logging.getLogger(__name__)
 # 🤖 AI function
 
 def ask_ai(prompt):
-try:
-response = requests.post(
-"https://openrouter.ai/api/v1/chat/completions",
-headers={
-"Authorization": f"Bearer {OPENROUTER_API_KEY}",
-"Content-Type": "application/json"
-},
-json={
-"model": "openrouter/auto",
-"messages": [
-{
-"role": "system",
-"content": "You are Jarvis, a smart, concise, and confident AI assistant like Iron Man's Jarvis."
-},
-{"role": "user", "content": prompt}
-]
-}
-)
+    try:
+        response = requests.post(
+            "https://openrouter.ai/api/v1/chat/completions",
+            headers={
+                "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+                "Content-Type": "application/json"
+            },
+            json={
+                "model": "openrouter/auto",
+                "messages": [
+                    {
+                        "role": "system",
+                        "content": "You are Jarvis, a smart, concise, and confident AI assistant like Iron Man's Jarvis."
+                    },
+                    {
+                        "role": "user",
+                        "content": prompt
+                    }
+                ]
+            }
+        )
 
+        data = response.json()
+
+        if "choices" in data:
+            return data["choices"][0]["message"]["content"]
+        else:
+            return "Error in response"
+
+    except Exception as e:
+        return str(e)
 ```
     data = response.json()
     logger.info(f"API Response: {data}")
